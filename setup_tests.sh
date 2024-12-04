@@ -57,6 +57,28 @@ touch y.tar.gz
 popd || exit
 #
 
+# test_extract.py
+mkdir -p extract
+pushd extract || exit
+
+echo hello > a
+echo xyz > b
+echo zzzzzz > z
+mkdir -p some/nested/dir
+echo abc > some/nested/dir/file
+echo 1 2 3 > nums
+mkdir -p other/nested/dir
+echo 4 5 6 > other/nested/dir/file
+cp -r . answer
+tar -cf big.tar a b some
+tar -cf z.tar z
+zip -r together.zip nums other
+rm -r a b z some/nested other
+touch d
+
+popd || exit
+#
+
 # test_mime.py
 mkdir -p mime
 pushd mime || exit

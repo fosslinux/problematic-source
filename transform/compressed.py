@@ -7,7 +7,6 @@ import shutil
 import zstandard
 from typing import Callable
 
-from util import walk_directory
 from problem import Problem, Severity 
 
 class CompressedTransformer():
