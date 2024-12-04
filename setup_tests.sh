@@ -47,6 +47,16 @@ head -c 6 file1.gz > file7.gz
 popd || exit
 #
 
+# test_compressed_rename.py
+mkdir -p compressed_rename
+pushd compressed_rename || exit
+
+touch x.tgz
+touch y.tar.gz
+
+popd || exit
+#
+
 # test_mime.py
 mkdir -p mime
 pushd mime || exit
