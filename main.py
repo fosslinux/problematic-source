@@ -16,9 +16,10 @@ _transforms = [CompressedRenameTransformer(), CompressedTransformer(), ExtractTr
 
 from checks.mime import MimeChecker
 from checks.gnulib import GnulibChecker
+from checks.autotools import AutotoolsChecker
 
 # List of checks
-_file_checks = [MimeChecker(DEEP)]
+_file_checks = [MimeChecker(DEEP), AutotoolsChecker(DEEP)]
 _global_checks = [GnulibChecker(DEEP)]
 
 def transforms(directory: str) -> dict[str, list[Problem]]:

@@ -28,7 +28,8 @@ class GnulibChecker(Checker):
 
         if self.deep:
             for file in files:
-                if self._check_file(file):
+                mime = magic.from_file(file, mime=True)
+                if mime.startswith("text/") and self._check_file(file):
                     return problem
 
         return None
