@@ -4,7 +4,7 @@ from checks.mime import MimeChecker
 from problem import Severity
 
 class TestMimeChecker():
-    checker = MimeChecker()
+    checker = MimeChecker(deep=True)
     path = os.path.join("testdata", "mime")
 
     def test_ok(self):

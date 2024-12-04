@@ -9,13 +9,17 @@ from transform.compressed import CompressedTransformer
 from transform.compressed_rename import CompressedRenameTransformer
 from transform.extract import ExtractTransformer
 
+DEEP = True
+
 # Ordered list of transforms
 _transforms = [CompressedRenameTransformer(), CompressedTransformer(), ExtractTransformer()]
 
 from checks.mime import MimeChecker
+from checks.gnulib import GnulibChecker
 
 # List of checks
-_checks = [MimeChecker()]
+_file_checks = [MimeChecker(DEEP)]
+_global_checks = [GnulibChecker(DEEP)]
 
 def transforms(directory: str) -> dict[str, list[Problem]]:
     # The first pass runs the first transform
@@ -43,12 +47,21 @@ def checks(directory: str) -> dict[str, list[Problem]]:
     problems = {}
     for file in walk_directory(directory):
         file_problems = []
-        for check in _checks:
+        for check in _file_checks:
             problem = check.execute(file)
             if problem:
                 file_problems.append(problem)
         if file_problems != []:
             problems[file] = file_problems
+
+    for check in _global_checks:
+        problem = check.execute(directory)
+        if problem:
+            if "" not in problems:
+                problems[""] = [problem]
+            else:
+                problems[""].append(problem)
+
     return problems
 
 def main():

@@ -1,10 +1,11 @@
 import magic 
 from typing import Dict
 
+from checks.base import Checker
 from util import walk_directory
 from problem import Problem, Severity 
 
-class MimeChecker:
+class MimeChecker(Checker):
     # lifted from Debian's devscripts suspicious-source
     WHITELIST = [
         "application/pgp-keys",
@@ -65,7 +66,7 @@ class MimeChecker:
         "application/x-executable",
     ]
 
-    def execute(self, file: str) -> [Problem | None]:
+    def execute(self, file: str) -> Problem | None:
         mime = magic.from_file(file, mime=True)
         if mime in self.BLACKLIST:
             return Problem(Severity.ERROR, f"{mime} is blacklisted")
