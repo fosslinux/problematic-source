@@ -166,4 +166,23 @@ touch bad.def autogen.def
 popd || exit
 #
 
+# test_texi.py
+mkdir -p texi
+pushd texi || exit
+
+touch x.dvi x.pdf x.texi
+echo "This is x.info, produced by makeinfo version 6.7" > x.info
+echo "Created on January 1, 1970 by texi2html 5.0" > x.html
+echo "This is a handwritten .info file" > y.info
+echo "<!DOCTYPE html>" > y.html
+echo "This looks like it could be generated, but isn't" > z.info
+touch z.texi
+echo "<!DOCTYPE html>" > hidden
+echo "<title>sneaky</title>" >> hidden
+echo "This is hidden.info, renamed, produced by makeinfo" > imnothere
+echo "normal file" > normal.txt
+
+popd || exit
+#
+
 popd || exit
