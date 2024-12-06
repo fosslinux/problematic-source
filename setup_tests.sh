@@ -185,4 +185,21 @@ echo "normal file" > normal.txt
 popd || exit
 #
 
+# test_bison.py
+mkdir -p bison
+pushd bison || exit
+
+echo "/* A Bison parser, made from parse.y */" > a.c
+echo "/* A Bison parser, made from betterparser.y */" > b
+echo "int main() {return 42;}" >> b
+echo "int main() {return 42;}" > c.c
+echo "#ifndef BISON_Y_TAB_H" > d.h
+echo "#define HI 42" > e.h
+cp e.h a.h
+touch y.tab.c y.tab.h
+touch f.y f.c f.h
+
+popd || exit
+#
+
 popd || exit
