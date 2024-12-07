@@ -66,6 +66,7 @@ class MimeChecker(Checker):
     BLACKLIST = [
         "application/x-pie-executable",
         "application/x-executable",
+        "application/x-gettext-translation",
     ]
 
     def execute(self, file: str) -> Problem | None:
