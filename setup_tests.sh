@@ -230,4 +230,16 @@ cp b.c lex.yy.c
 popd || exit
 #
 
+# test_gperf.py
+mkdir -p gperf
+pushd gperf || exit
+
+echo "/* ANSI-C code produced by gperf version 3.0.3 */" > a.h
+echo "/* this is a normal file" > b.h
+echo "ntohing" > nothing.txt
+touch c.c c.h c.gperf
+
+popd || exit
+#
+
 popd || exit
