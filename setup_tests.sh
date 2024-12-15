@@ -167,6 +167,19 @@ echo "no problem" > random.txt
 popd || exit
 #
 
+# test_docbook.py
+mkdir -p docbook 
+pushd docbook || exit
+
+echo ".\\\" Generator: DocBook XSL Stylesheets" > bad.1
+echo ".\\\" Generator: DocBook XSL Stylesheets" > bad.8
+echo ".\\\" Generator: DocBook XSL Stylesheets" > bad.man
+echo ".SH I made this myself!" > good.3
+echo "no problem" > random.txt
+
+popd || exit
+#
+
 # test_autogen.py
 mkdir -p autogen
 pushd autogen || exit

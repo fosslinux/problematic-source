@@ -7,7 +7,6 @@ from problem import Problem, Severity
 class GperfChecker(Checker):
     def execute(self, file: str) -> Problem | None:
         mime = magic.from_file(file, mime=True)
-        print(mime)
         if file.endswith(".h") or file.endswith(".c") or mime == "text/x-c" or self._text_deep(file):
             with open(file, "rb") as f:
                 if b"produced by gperf" in f.read():
