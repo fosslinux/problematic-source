@@ -180,6 +180,19 @@ echo "no problem" > random.txt
 popd || exit
 #
 
+# test_po4a.py
+mkdir -p po4a 
+pushd po4a || exit
+
+echo ".\\\" This file was generated with po4a. Translate the source file." > bad.1
+echo ".\\\" This file was generated with po4a. Translate the source file." > bad.8
+echo ".\\\" This file was generated with po4a. Translate the source file." > bad.man
+echo ".SH I made this myself!" > good.3
+echo "no problem" > random.txt
+
+popd || exit
+#
+
 # test_autogen.py
 mkdir -p autogen
 pushd autogen || exit
