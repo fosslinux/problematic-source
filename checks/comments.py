@@ -64,8 +64,8 @@ class CommentsChecker(Checker):
             for string in self.SUSPICIOUS:
                 for variant in [string, string.capitalize(), string.upper()]:
                     if variant.encode("utf-8") in text:
-                        return Problem(Severity.WARN, f"{variant} may indicate this file is generated")
+                        return Problem(Severity.WARN, f"\"{variant}\" may indicate this file is generated, or is a generator")
             for string in self.EXACTS:
                 if string.encode("utf-8") in text:
-                    return Problem(Severity.WARN, f"{string} may indicate this file is generated")
+                    return Problem(Severity.WARN, f"\"{string}\" may indicate this file is generated, or is a generator")
         return None
