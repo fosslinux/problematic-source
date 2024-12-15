@@ -12,14 +12,39 @@ from transform.extract import ExtractTransformer
 DEEP = True
 
 # Ordered list of transforms
-_transforms = [CompressedRenameTransformer(), CompressedTransformer(), ExtractTransformer()]
+_transforms = [
+    CompressedRenameTransformer(),
+    CompressedTransformer(),
+    ExtractTransformer(),
+]
 
-from checks.mime import MimeChecker
-from checks.gnulib import GnulibChecker
+from checks.autogen import AutogenChecker
 from checks.autotools import AutotoolsChecker
+from checks.bison import BisonChecker
+from checks.docbook import DocbookChecker
+from checks.flex import FlexChecker
+from checks.gperf import GperfChecker
+from checks.help2man import Help2manChecker
+from checks.po4a import Po4aChecker
+from checks.pod_man import PodManChecker
+from checks.mime import MimeChecker
+from checks.comments import CommentsChecker
+from checks.gnulib import GnulibChecker
 
 # List of checks
-_file_checks = [MimeChecker(DEEP), AutotoolsChecker(DEEP)]
+_file_checks = [
+    AutogenChecker(DEEP),
+    AutotoolsChecker(DEEP),
+    BisonChecker(DEEP),
+    DocbookChecker(DEEP),
+    FlexChecker(DEEP),
+    GperfChecker(DEEP),
+    Help2manChecker(DEEP),
+    Po4aChecker(DEEP),
+    PodManChecker(DEEP),
+    MimeChecker(DEEP),
+    CommentsChecker(DEEP),
+]
 _global_checks = [GnulibChecker(DEEP)]
 
 def transforms(directory: str) -> dict[str, list[Problem]]:
