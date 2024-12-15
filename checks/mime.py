@@ -67,6 +67,8 @@ class MimeChecker(Checker):
         "application/x-pie-executable",
         "application/x-executable",
         "application/x-gettext-translation",
+        "application/x-java-applet",
+        "application/java-archive",
     ]
 
     def execute(self, file: str) -> Problem | None:
