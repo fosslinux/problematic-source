@@ -10,6 +10,8 @@ from typing import Callable
 from problem import Problem, Severity 
 
 class CompressedTransformer():
+    MAGIC = 0xC0E3
+
     def _execute_type(self, file: str, opener: Callable, extension: str, name: str) -> [Problem | None]:
         extension = f".{extension}"
         if file.endswith(extension):
@@ -24,9 +26,9 @@ class CompressedTransformer():
                     os.remove(outfile)
                 except FileNotFoundError:
                     pass
-                return Problem(Severity.FATAL, f"Unable to parse {name}: {e}")
+                return Problem(Severity.FATAL, f"Unable to parse {name}: {e}", file, self.MAGIC)
         else:
-            return Problem(Severity.UNSUPPORTED, f"Unknown extension {extension} for {name} file")
+            return Problem(Severity.UNSUPPORTED, f"Unknown extension {extension} for {name} file", file, self.MAGIC)
         return None
 
     def execute(self, file: str) -> tuple[bool, Problem | None]:

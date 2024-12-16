@@ -11,7 +11,7 @@ class ManChecker(Checker):
         if mime == "text/troff" or re.match(r".*\.(?:[1-9]|man)$", file) or self._text_deep(file):
             with open(file, "rb") as f:
                 if self.MATCH in f.read():
-                    return Problem(Severity.ERROR, self.ERROR)
+                    return Problem(Severity.ERROR, self.ERROR, file, self.MAGIC)
         return None
 
 class ManCheckerTester():

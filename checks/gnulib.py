@@ -5,6 +5,8 @@ from problem import Problem, Severity
 from util import walk_directory
 
 class GnulibChecker(Checker):
+    MAGIC = 0x911B
+
     CULPRITS = [
         "text/x-m4",
         "text/x-makefile"
@@ -18,7 +20,7 @@ class GnulibChecker(Checker):
             return self.IDENTIFIER.encode("utf-8") in suspect.read()
 
     def execute(self, directory: str) -> Problem | None:
-        problem = Problem(Severity.ERROR, "gnulib imported with gnulib-tool")
+        problem = Problem(Severity.ERROR, "gnulib imported with gnulib-tool", "", self.MAGIC)
 
         files = walk_directory(directory)
         for file in files:

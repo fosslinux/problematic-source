@@ -1,4 +1,5 @@
 import enum
+import hashlib
 
 class Severity(enum.Enum):
     FATAL = 1
@@ -7,9 +8,10 @@ class Severity(enum.Enum):
     UNSUPPORTED = 4
 
 class Problem():
-    def __init__(self, severity: Severity, desc: str):
+    def __init__(self, severity: Severity, desc: str, filename: str, magic: int):
         self.severity = severity
         self.desc = desc
+        self.hash = hashlib.md5((filename + str(magic)).encode("utf-8"))
 
     def __eq__(self, other):
         if not isinstance(other, Problem):

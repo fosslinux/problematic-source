@@ -6,7 +6,9 @@ from util import walk_directory
 from problem import Problem, Severity 
 
 class MimeChecker(Checker):
-    # lifted from Debian's devscripts suspicious-source
+    MAGIC = 0x414E
+
+    # partially lifted from Debian's devscripts suspicious-source
     WHITELIST = [
         "application/pgp-keys",
         "application/vnd.font-fontforge-sfd",  # font source: fontforge
@@ -69,12 +71,15 @@ class MimeChecker(Checker):
         "application/x-gettext-translation",
         "application/x-java-applet",
         "application/java-archive",
+        "application/x-archive",
+        "application/x-object",
+        "application/x-sharedlib",
     ]
 
     def execute(self, file: str) -> Problem | None:
         mime = magic.from_file(file, mime=True)
         if mime in self.BLACKLIST:
-            return Problem(Severity.ERROR, f"{mime} is blacklisted")
+            return Problem(Severity.ERROR, f"{mime} is blacklisted", file, self.MAGIC)
         elif mime not in self.WHITELIST:
-            return Problem(Severity.WARN, f"{mime} is not whitelisted")
+            return Problem(Severity.WARN, f"{mime} is not whitelisted", file, self.MAGIC)
         return None
