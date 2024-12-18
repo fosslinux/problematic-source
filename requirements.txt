@@ -1,3 +1,4 @@
 zstandard
 pytest
 python-magic
+survey

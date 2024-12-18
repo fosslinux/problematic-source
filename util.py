@@ -1,5 +1,15 @@
 import os
 
+class Colors():
+    RESET = "\033[0m"
+    BRIGHT_RED = "\033[91m"
+    RED = "\033[31m"
+    YELLOW = "\033[33m"
+    GRAY = "\033[90m"
+    BOLD = "\033[1m"
+    GREEN = "\033[32m"
+    MAGENTA = "\033[35m"
+
 def walk_directory(path: str):
     all_files = []
     for (root, _ , files) in os.walk(path):

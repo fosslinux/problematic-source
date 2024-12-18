@@ -1,9 +1,12 @@
 import os
 import shutil
 import sys
+import json
+import survey
 
 from problem import Problem, Severity
 from util import walk_directory
+from reporter import Reporter
 
 from transform.compressed import CompressedTransformer
 from transform.compressed_rename import CompressedRenameTransformer
@@ -30,6 +33,7 @@ from checks.pod_man import PodManChecker
 from checks.mime import MimeChecker
 from checks.comments import CommentsChecker
 from checks.gnulib import GnulibChecker
+from checks.texi import TexiChecker
 
 # List of checks
 _file_checks = [
@@ -42,6 +46,7 @@ _file_checks = [
     Help2manChecker(DEEP),
     Po4aChecker(DEEP),
     PodManChecker(DEEP),
+    TexiChecker(DEEP),
     MimeChecker(DEEP),
     CommentsChecker(DEEP),
 ]
@@ -72,6 +77,8 @@ def transforms(directory: str) -> dict[str, list[Problem]]:
 def checks(directory: str) -> dict[str, list[Problem]]:
     problems = {}
     for file in walk_directory(directory):
+        if whitelisted(file):
+            continue
         file_problems = []
         for check in _file_checks:
             problem = check.execute(file)
@@ -90,6 +97,16 @@ def checks(directory: str) -> dict[str, list[Problem]]:
 
     return problems
 
+def whitelisted(file: str) -> bool:
+    PREFIXES = ["Changelog", "ChangeLog", "NEWS"]
+
+    filename = os.path.basename(file)
+    for prefix in PREFIXES:
+        if filename.startswith(prefix):
+            return True
+
+    return False
+
 def main():
     outdir = sys.argv[1]
     os.makedirs(outdir, exist_ok=True)
@@ -101,17 +118,28 @@ def main():
             shutil.copyfile(arg, dest)
 
     transform_problems = transforms(outdir)
-    print("The following problems were encountered while transforming files to be checked:")
-    for file, problems in transform_problems.items():
-        for problem in problems:
-            problem.print(file)
-    print()
+    if transform_problems != {}:
+        print("The following problems were encountered while transforming files to be checked:")
+        for file, problems in transform_problems.items():
+            for problem in problems:
+                print(problem)
+        print()
+        print("This usually indicates a problem with problematic-source.")
+        sys.exit(1)
 
-    print("The follow possible problems were found:")
     check_problems = checks(outdir)
+    all_problems = []
+    print("The follow possible problems were found:")
     for file, problems in check_problems.items():
+        all_problems += problems
         for problem in problems:
-            problem.print(file)
+            print(problem)
+
+    reporter = Reporter(all_problems)
+    reporter.repl()
+    file = survey.routines.input("File to write report to: ")
+    with open(file, "w") as f:
+        f.write(json.dumps(reporter.json(), indent=4))
 
 if __name__ == "__main__":
     main()
