@@ -19,6 +19,8 @@ class MimeChecker(Checker):
         "application/x-font-woff",  # font object and source
         "application/x-symlink",
         "application/xml",
+        "application/javascript",
+        "application/x-javascript",
         "audio/x-wav",
         "font/otf",  # font object and source
         "font/ttf",  # font object and source
@@ -41,6 +43,7 @@ class MimeChecker(Checker):
         "text/html",
         "text/plain",
         "text/rtf",
+        "text/javascript",
         "text/troff",
         "text/x-asm",
         "text/x-awk",
