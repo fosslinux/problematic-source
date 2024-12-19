@@ -1,5 +1,6 @@
 import enum
 import hashlib
+import os
 from util import Colors
 
 class Severity(enum.Enum):
@@ -13,12 +14,27 @@ class Problem():
         self.severity = severity
         self.desc = desc
         self.file = filename
-        self.hash = hashlib.md5((filename + str(magic)).encode("utf-8")).hexdigest()
+        self.explained = False
+        self._magic = magic
+
+    @property
+    def hash(self):
+        return hashlib.md5((self.file + str(self._magic)).encode("utf-8")).hexdigest()
 
     def __eq__(self, other):
         if not isinstance(other, Problem):
             return NotImplemented
         return self.severity == other.severity and self.desc == other.desc
+    
+    def strip_prefix(self, directory: str):
+        if self.file:
+            self.file = os.path.relpath(self.file, start=directory)
+
+    def match_report(self, report):
+        for explanation in report:
+            for problem in explanation["problems"]:
+                if problem["hash"] == self.hash:
+                    self.explained = True
 
     def json(self):
         return {

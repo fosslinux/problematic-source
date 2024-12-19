@@ -43,9 +43,24 @@ class Dismissal(Explanation):
         return json
 
 class Reporter():
-    def __init__(self, problems: list[Problem]):
+    def __init__(self, problems: list[Problem], report):
         self.problems = problems
         self._explanations = []
+        for explanation in report:
+            match explanation["type"]:
+                case "solution":
+                    expl_obj = Solution(explanation["message"])
+                case "dismissal":
+                    expl_obj = Dismissal(explanation["message"])
+                case _:
+                    raise ValueError(f"Unknown explanation type {explanation['type']}")
+            for problem in explanation["problems"]:
+                for i, check in enumerate(self.problems):
+                    if problem["hash"] == check.hash:
+                        del self.problems[i]
+                        expl_obj.add_problems([check])
+                        break
+            self._explanations.append(expl_obj)
 
     def _help(self):
         print("The following commands are possible:")
@@ -61,16 +76,16 @@ class Reporter():
         max_rows = max([len(x) // size.columns + 1 for x in items])
         return size.lines // max_rows - 1
 
-    def _select_problems(self) -> list[Problem]:
+    def _select_problems(self) -> tuple[list[Problem], list[int]]:
         indicies = survey.routines.basket("Which problems are you explaining?", options=map(str, self.problems), view_max=self._max_view(map(str, self.problems)))
-        return [self.problems[i] for i in indicies]
+        return ([self.problems[i] for i in indicies], indicies)
 
     def repl(self):
         print("Our goal here is to fix all of these problems or dismiss them as invalid, and document.")
         self._help()
         input()
         while len(self.problems) > 0:
-            problems = self._select_problems()
+            problems, indicies = self._select_problems()
             done = False
             while not done:
                 command = input("> ").strip()
@@ -96,8 +111,8 @@ class Reporter():
                     print("Invalid command")
                     self._help()
             if done:
-                for problem in problems:
-                    self.problems.remove(problem)
+                for index in sorted(indicies, reverse=True):
+                    del self.problems[index]
 
     def _same(self, problems: list[Problem]):
         choices = list(map(str, self._explanations)) + ["None"]

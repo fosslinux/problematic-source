@@ -1,8 +1,10 @@
+import argparse
+import json
 import os
 import shutil
-import sys
-import json
 import survey
+import sys
+import tempfile
 
 from problem import Problem, Severity
 from util import walk_directory
@@ -110,9 +112,22 @@ def whitelisted(file: str) -> bool:
     return False
 
 def main():
-    outdir = sys.argv[1]
+    parser = argparse.ArgumentParser(description="Find and report on problematic source code in a codebase")
+    parser.add_argument("-t", "--tmpdir", help="directory to use temporarily", required=False)
+    parser.add_argument("-r", "--report", help="an existing report file to read", required=False)
+    parser.add_argument("-o", "--output", help="where to output the report file", required=True)
+    parser.add_argument("inputs", nargs="+")
+    args = parser.parse_args()
+
+    if args.report:
+        with open(args.report, "r") as f:
+            report = json.load(f)
+    else:
+        report = []
+
+    outdir = args.tmpdir or tempfile.TemporaryDirectory().name
     os.makedirs(outdir, exist_ok=True)
-    for arg in sys.argv[2:]:
+    for arg in args.inputs:
         dest = os.path.join(outdir, os.path.basename(arg))
         if os.path.isdir(arg):
             shutil.copytree(arg, dest)
@@ -124,6 +139,7 @@ def main():
         print("The following problems were encountered while transforming files to be checked:")
         for file, problems in transform_problems.items():
             for problem in problems:
+                problem.strip_prefix(outdir)
                 print(problem)
         print()
         print("This usually indicates a problem with problematic-source.")
@@ -131,17 +147,31 @@ def main():
 
     check_problems = checks(outdir)
     all_problems = []
-    print("The follow possible problems were found:")
+    print(report)
     for file, problems in check_problems.items():
         all_problems += problems
         for problem in problems:
             print(problem)
+            problem.strip_prefix(outdir)
+            problem.match_report(report)
 
-    reporter = Reporter(all_problems)
+    if args.report:
+        print("The following problems have already been explained:")
+        for file, problems in check_problems.items():
+            for problem in problems:
+                if problem.explained:
+                    print(problem)
+
+    print("Possible problems:")
+    for file, problems in check_problems.items():
+        for problem in problems:
+            if not problem.explained:
+                print(problem)
+
+    reporter = Reporter(all_problems, report)
     reporter.repl()
-    file = survey.routines.input("File to write report to: ")
-    with open(file, "w") as f:
-        f.write(json.dumps(reporter.json(), indent=4))
+    with open(args.output, "w") as f:
+        f.write(json.dumps(reporter.json(), indent=2))
 
 if __name__ == "__main__":
     main()
