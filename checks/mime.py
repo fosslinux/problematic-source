@@ -1,8 +1,7 @@
-import magic 
 from typing import Dict
 
 from checks.base import Checker
-from util import walk_directory
+from util import walk_directory, get_mime
 from problem import Problem, Severity 
 
 class MimeChecker(Checker):
@@ -80,7 +79,7 @@ class MimeChecker(Checker):
     ]
 
     def execute(self, file: str) -> Problem | None:
-        mime = magic.from_file(file, mime=True)
+        mime = get_mime(file)
         if mime in self.BLACKLIST:
             return Problem(Severity.ERROR, f"{mime} is blacklisted", file, self.MAGIC)
         elif mime not in self.WHITELIST:

@@ -1,8 +1,8 @@
-import magic
 import os
 
 from checks.base import Checker
 from problem import Problem, Severity
+from util import get_mime
 
 class TexiChecker(Checker):
     MAGIC = 0x7E81
@@ -33,7 +33,7 @@ class TexiChecker(Checker):
     def execute(self, file: str) -> Problem | None:
         for extension, val in self.EXTENSIONS.items():
             mime, checker = val
-            if file.endswith(extension) or (mime and magic.from_file(file, mime=True) == mime):
+            if file.endswith(extension) or (mime and get_mime(file) == mime):
                 problem = checker(self, file)
                 if problem:
                     return problem

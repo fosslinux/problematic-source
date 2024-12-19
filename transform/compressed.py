@@ -1,13 +1,13 @@
 import bz2
 import gzip
 import lzma
-import magic
 import os
 import shutil
 import zstandard
 from typing import Callable
 
 from problem import Problem, Severity 
+from util import get_mime
 
 class CompressedTransformer():
     MAGIC = 0xC0E3
@@ -32,9 +32,8 @@ class CompressedTransformer():
         return None
 
     def execute(self, file: str) -> tuple[bool, Problem | None]:
-        mime = magic.from_file(file, mime=True)
         problem = None
-        match mime:
+        match get_mime(file):
             case "application/gzip" | "application/x-gzip":
                 problem = self._execute_type(file, gzip.open, "gz", "gzip")
             case "application/x-bzip2":

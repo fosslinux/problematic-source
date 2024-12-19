@@ -4,11 +4,11 @@ import re
 
 from checks.base import Checker
 from problem import Problem, Severity
+from util import get_mime
 
 class ManChecker(Checker):
     def execute(self, file: str) -> Problem | None:
-        mime = magic.from_file(file, mime=True)
-        if mime == "text/troff" or re.match(r".*\.(?:[1-9]|man)$", file) or self._text_deep(file):
+        if get_mime(file) == "text/troff" or re.match(r".*\.(?:[1-9]|man)$", file) or self._text_deep(file):
             with open(file, "rb") as f:
                 if self.MATCH in f.read():
                     return Problem(Severity.ERROR, self.ERROR, file, self.MAGIC)

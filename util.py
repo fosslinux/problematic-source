@@ -1,4 +1,6 @@
 import os
+import magic
+import functools
 
 class Colors():
     RESET = "\033[0m"
@@ -16,3 +18,7 @@ def walk_directory(path: str):
         for file in files:
             all_files.append(os.path.join(root, file))
     return all_files
+
+@functools.cache
+def get_mime(file: str) -> str:
+    return magic.from_file(file, mime=True)

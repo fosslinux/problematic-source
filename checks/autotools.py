@@ -1,5 +1,4 @@
 import os
-import magic
 
 from checks.base import Checker
 from problem import Problem, Severity

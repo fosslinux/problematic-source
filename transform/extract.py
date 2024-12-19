@@ -1,16 +1,15 @@
-import magic
 import os
 import tarfile
 import zipfile
 
 from problem import Problem, Severity
+from util import get_mime
 
 class ExtractTransformer():
     MAGIC = 0xE8AC
 
     def execute(self, file: str) -> tuple[bool, Problem | None]:
-        mime = magic.from_file(file, mime=True)
-        match mime:
+        match get_mime(file):
             case "application/x-tar":
                 try:
                     with tarfile.open(file) as tar:

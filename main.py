@@ -68,6 +68,7 @@ def transforms(directory: str) -> dict[str, list[Problem]]:
                     if acted:
                         action = True
                     if problem:
+                        file = os.path.relpath(file, start=directory)
                         if file not in problems:
                             problems[file] = [problem]
                         elif problem not in problems[file]:
@@ -85,6 +86,7 @@ def checks(directory: str) -> dict[str, list[Problem]]:
             if problem:
                 file_problems.append(problem)
         if file_problems != []:
+            file = os.path.relpath(file, start=directory)
             problems[file] = file_problems
 
     for check in _global_checks:

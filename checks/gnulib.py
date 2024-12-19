@@ -1,8 +1,6 @@
-import magic
-
 from checks.base import Checker
 from problem import Problem, Severity
-from util import walk_directory
+from util import walk_directory, get_mime
 
 class GnulibChecker(Checker):
     MAGIC = 0x911B
@@ -24,14 +22,12 @@ class GnulibChecker(Checker):
 
         files = walk_directory(directory)
         for file in files:
-            mime = magic.from_file(file, mime=True)
-            if mime in self.CULPRITS and self._check_file(file):
+            if get_mime(file) in self.CULPRITS and self._check_file(file):
                 return problem
 
         if self.deep:
             for file in files:
-                mime = magic.from_file(file, mime=True)
-                if mime.startswith("text/") and self._check_file(file):
+                if get_mime(file).startswith("text/") and self._check_file(file):
                     return problem
 
         return None

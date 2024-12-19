@@ -1,13 +1,12 @@
-import magic
-
 from problem import Problem
+from util import get_mime
 
 class Checker():
     def __init__(self, deep: bool):
         self.deep = deep
 
     def _is_text(self, file: str):
-        return magic.from_file(file, mime=True).startswith("text/")
+        return get_mime(file).startswith("text/")
 
     def _text_deep(self, file: str):
         return self.deep and self._is_text(file)
