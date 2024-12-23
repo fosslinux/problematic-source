@@ -41,7 +41,7 @@ class TexiChecker(Checker):
                     texi = file.removesuffix(extension) + ".texi"
                     if os.path.isfile(texi):
                         return Problem(Severity.WARN, f"likely generated from {texi}", file, self.MAGIC)
-                else:
+                elif not file.endswith(".texi"):
                     for file in os.listdir(os.path.dirname(file)):
                         if file.endswith(".texi"):
                             return Problem(Severity.WARN, f"may be generated from {file}", file, self.MAGIC)
