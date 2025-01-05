@@ -35,6 +35,9 @@ class CompressedTransformer():
         problem = None
         match get_mime(file):
             case "application/gzip" | "application/x-gzip":
+                if file.endswith(".dia"):
+                    # dia files are compressed with gzip, and thus have a gzip mimetype
+                    return (False, None)
                 problem = self._execute_type(file, gzip.open, "gz", "gzip")
             case "application/x-bzip2":
                 problem = self._execute_type(file, bz2.open, "bz2", "bzip2")
