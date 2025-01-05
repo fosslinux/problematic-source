@@ -42,9 +42,9 @@ class TexiChecker(Checker):
                     if os.path.isfile(texi):
                         return Problem(Severity.WARN, f"likely generated from {texi}", file, self.MAGIC)
                 elif not file.endswith(".texi"):
-                    for file in os.listdir(os.path.dirname(file)):
-                        if file.endswith(".texi"):
-                            return Problem(Severity.WARN, f"may be generated from {file}", file, self.MAGIC)
+                    for check in os.listdir(os.path.dirname(file)):
+                        if check.endswith(".texi"):
+                            return Problem(Severity.WARN, f"may be generated from {check}", file, self.MAGIC)
 
         if self.deep:
             for _, checker in self.EXTENSIONS.values():
