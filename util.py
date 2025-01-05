@@ -12,11 +12,18 @@ class Colors():
     GREEN = "\033[32m"
     MAGENTA = "\033[35m"
 
-def walk_directory(path: str):
+def walk_directory(path: str, exclusions: list[str]=[]):
     all_files = []
-    for (root, _ , files) in os.walk(path):
+    for (root, _, files) in os.walk(path):
         for file in files:
-            all_files.append(os.path.join(root, file))
+            relpath = os.path.join(root, file)
+            ok = True
+            for exclusion in exclusions:
+                if relpath.endswith(exclusion):
+                    ok = False
+                    break
+            if ok:
+                all_files.append(relpath)
     return all_files
 
 @functools.cache

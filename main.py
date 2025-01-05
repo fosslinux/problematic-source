@@ -54,7 +54,7 @@ _file_checks = [
 ]
 _global_checks = [GnulibChecker(DEEP)]
 
-def transforms(directory: str) -> dict[str, list[Problem]]:
+def transforms(directory: str, exclusions: list[str]) -> dict[str, list[Problem]]:
     # The first pass runs the first transform
     # This is repeated until it is a no-op
     # Then, the second pass runs the first two transforms
@@ -65,7 +65,7 @@ def transforms(directory: str) -> dict[str, list[Problem]]:
         while action:
             action = False
             for transform in _transforms[:i + 1]:
-                for file in walk_directory(directory):
+                for file in walk_directory(directory, exclusions):
                     acted, problem = transform.execute(file)
                     if acted:
                         action = True
@@ -77,9 +77,9 @@ def transforms(directory: str) -> dict[str, list[Problem]]:
                             problems[file].append(problem)
     return problems
 
-def checks(directory: str) -> dict[str, list[Problem]]:
+def checks(directory: str, exclusions: list[str]) -> dict[str, list[Problem]]:
     problems = {}
-    for file in walk_directory(directory):
+    for file in walk_directory(directory, exclusions):
         if whitelisted(file):
             continue
         file_problems = []
@@ -116,6 +116,7 @@ def main():
     parser.add_argument("-t", "--tmpdir", help="directory to use temporarily", required=False)
     parser.add_argument("-r", "--report", help="an existing report file to read", required=False)
     parser.add_argument("-o", "--output", help="where to output the report file", required=True)
+    parser.add_argument("-x", "--exclude", help="file to exclude", action="append")
     parser.add_argument("inputs", nargs="+")
     args = parser.parse_args()
 
@@ -134,7 +135,7 @@ def main():
         elif os.path.isfile(arg):
             shutil.copyfile(arg, dest)
 
-    transform_problems = transforms(outdir)
+    transform_problems = transforms(outdir, args.exclude)
     if transform_problems != {}:
         print("The following problems were encountered while transforming files to be checked:")
         for file, problems in transform_problems.items():
@@ -145,7 +146,7 @@ def main():
         print("This usually indicates a problem with problematic-source.")
         sys.exit(1)
 
-    check_problems = checks(outdir)
+    check_problems = checks(outdir, args.exclude)
     all_problems = []
     print(report)
     for file, problems in check_problems.items():
