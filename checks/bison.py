@@ -44,6 +44,6 @@ class BisonChecker(Checker):
             extension = ".c"
         elif file.endswith(".h"):
             extension = ".h"
-        bison_file = file.removesuffix(extension) + ".y")
+        bison_file = file.removesuffix(extension) + ".y"
         if extension and os.path.isfile(bison_file):
             return Problem(Severity.WARN, f"may be generated from {bison_file} using bison", file, self.MAGIC)
