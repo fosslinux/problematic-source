@@ -44,6 +44,7 @@ class MimeChecker(Checker):
         "text/rtf",
         "text/javascript",
         "text/troff",
+        "text/x-Algol68",
         "text/x-asm",
         "text/x-awk",
         "text/x-c",
@@ -55,6 +56,7 @@ class MimeChecker(Checker):
         "text/x-m4",
         "text/x-makefile",
         "text/x-msdos-batch",
+        "text/x-objective-c",
         "text/x-pascal",
         "text/x-perl",
         "text/x-php",
@@ -62,6 +64,7 @@ class MimeChecker(Checker):
         "text/x-ruby",
         "text/x-script.python",
         "text/x-shellscript",
+        "text/x-tcl",
         "text/x-tex",
         "text/x-texinfo",
         "text/xml",
@@ -76,6 +79,9 @@ class MimeChecker(Checker):
         "application/x-archive",
         "application/x-object",
         "application/x-sharedlib",
+        "application/x-mach-binary",
+        "application/x-coff",
+        "application/vnd.microsoft.portable-executable",
     ]
 
     def execute(self, file: str) -> Problem | None:
