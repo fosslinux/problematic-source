@@ -75,7 +75,14 @@ mkdir -p answer
 cp -r ./* answer || true
 tar -cf big.tar a b some
 tar -cf z.tar z
-zip -r together.zip nums other
+if command -v zip >/dev/null; then
+	zip -r together.zip nums other
+elif command -v bsdtar >/dev/null; then
+	bsdtar -cf together.zip nums other
+else
+	echo "setup_tests.sh: error: Couldn't find either 'zip' or 'bsdtar', exiting..." >&2
+	exit 1
+fi
 rm -r a b z some/nested other
 touch d
 
