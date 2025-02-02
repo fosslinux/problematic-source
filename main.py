@@ -115,7 +115,8 @@ def main():
     parser.add_argument("-t", "--tmpdir", help="directory to use temporarily", required=False)
     parser.add_argument("-r", "--report", help="an existing report file to read", required=False)
     parser.add_argument("-o", "--output", help="where to output the report file", required=True)
-    parser.add_argument("-x", "--exclude", help="file to exclude", action="append")
+    parser.add_argument("-x", "--exclude", help="file to exclude", action="extend", nargs="+")
+    parser.add_argument("--report-replace", help="format: A B, replaces A with B in the pathnames from the report", action="append", nargs=2)
     parser.add_argument("inputs", nargs="+")
     args = parser.parse_args()
 
@@ -124,6 +125,12 @@ def main():
             report = json.load(f)
     else:
         report = []
+
+    def report_replacer(s: str):
+        if args.report_replace:
+            for x, y in args.report_replace:
+                s = s.replace(x, y)
+        return s
 
     outdir = args.tmpdir or tempfile.TemporaryDirectory().name
     os.makedirs(outdir, exist_ok=True)
@@ -147,29 +154,30 @@ def main():
 
     check_problems = checks(outdir, args.exclude)
     all_problems = []
-    print(report)
     for file, problems in check_problems.items():
         all_problems += problems
         for problem in problems:
-            print(problem)
             problem.strip_prefix(outdir)
-            problem.match_report(report)
+            problem.match_report(report, report_replacer)
 
     if args.report:
         print("The following problems have already been explained:")
         for file, problems in check_problems.items():
             for problem in problems:
-                if problem.explained:
+                if problem.explanation:
                     print(problem)
 
     print("Possible problems:")
     for file, problems in check_problems.items():
         for problem in problems:
-            if not problem.explained:
+            if not problem.explanation:
                 print(problem)
 
     reporter = Reporter(all_problems, report)
-    reporter.repl()
+    try:
+        reporter.repl()
+    except Exception as e:
+        print(e)
     with open(args.output, "w") as f:
         f.write(json.dumps(reporter.json(), indent=2))
 

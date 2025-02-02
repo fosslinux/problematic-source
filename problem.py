@@ -2,6 +2,7 @@ import enum
 import hashlib
 import os
 from util import Colors
+from collections.abc import Callable
 
 class Severity(enum.Enum):
     FATAL = 1
@@ -14,12 +15,15 @@ class Problem():
         self.severity = severity
         self.desc = desc
         self.file = filename
-        self.explained = False
+        self.explanation = None
         self._magic = magic
 
     @property
     def hash(self):
-        return hashlib.md5((self.file + str(self._magic)).encode("utf-8")).hexdigest()
+        return self.hash_filed(self.file)
+
+    def hash_filed(self, file: str):
+        return hashlib.md5((file + str(self._magic)).encode("utf-8")).hexdigest()
 
     def __eq__(self, other):
         if not isinstance(other, Problem):
@@ -30,11 +34,15 @@ class Problem():
         if self.file:
             self.file = os.path.relpath(self.file, start=directory)
 
-    def match_report(self, report):
+    def match_report(self, report, replacer: Callable[[str], str] | None = None):
         for explanation in report:
             for problem in explanation["problems"]:
-                if problem["hash"] == self.hash:
-                    self.explained = True
+                file = self.file
+                if replacer:
+                    file = replacer(file)
+                if problem["hash"] == self.hash_filed(file):
+                    self.explanation = explanation
+                    return
 
     def json(self):
         return {

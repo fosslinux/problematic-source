@@ -1,6 +1,7 @@
-import os
-import magic
 import functools
+import magic
+import os
+import re
 
 class Colors():
     RESET = "\033[0m"
@@ -13,13 +14,15 @@ class Colors():
     MAGENTA = "\033[35m"
 
 def walk_directory(path: str, exclusions: list[str]=[]):
+    if not exclusions:
+        exclusions = []
     all_files = []
     for (root, _, files) in os.walk(path):
         for file in files:
             relpath = os.path.join(root, file)
             ok = True
             for exclusion in exclusions:
-                if relpath.endswith(exclusion):
+                if re.search(exclusion, relpath) != None:
                     ok = False
                     break
             if ok:
