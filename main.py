@@ -2,7 +2,6 @@ import argparse
 import json
 import os
 import shutil
-import survey
 import sys
 import tempfile
 

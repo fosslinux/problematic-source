@@ -1,5 +1,4 @@
 import os
-import survey
 
 from problem import Problem, Severity
 from util import Colors
@@ -54,12 +53,10 @@ class Reporter():
                     expl_obj = Dismissal(explanation["message"])
                 case _:
                     raise ValueError(f"Unknown explanation type {explanation['type']}")
-            for problem in explanation["problems"]:
-                for i, check in enumerate(self.problems):
-                    if problem["hash"] == check.hash:
-                        del self.problems[i]
-                        expl_obj.add_problems([check])
-                        break
+            for i, check in reversed(list(enumerate(self.problems))):
+                if check.explanation == explanation:
+                    del self.problems[i]
+                    expl_obj.add_problems([check])
             self._explanations.append(expl_obj)
 
     def _help(self):
@@ -77,7 +74,19 @@ class Reporter():
         return size.lines // max_rows - 1
 
     def _select_problems(self) -> tuple[list[Problem], list[int]]:
-        indicies = survey.routines.basket("Which problems are you explaining?", options=map(str, self.problems), view_max=self._max_view(map(str, self.problems)))
+        max_digits = len(str(len(self.problems) - 1))
+        for index, problem in enumerate(self.problems):
+            print(f"({str(index).zfill(max_digits)}) {problem}")
+        print()
+
+        answer = input("What problems are you explaining (comma-separated)? ")
+        indicies = []
+        for part in answer.split(","):
+            if "-" in part:
+                low, high = map(int, part.split("-"))
+                indicies += list(range(low, high + 1))
+            else:
+                indicies += [int(part)]
         return ([self.problems[i] for i in indicies], indicies)
 
     def repl(self):
@@ -116,7 +125,10 @@ class Reporter():
 
     def _same(self, problems: list[Problem]):
         choices = list(map(str, self._explanations)) + ["None"]
-        index = survey.routines.select("Which explanation applies?", options=choices)
+        max_digits = len(str(len(choices)))
+        for index, problem in enumerate(choices):
+            print(f"({str(index).zfill(max_digits)}) {problem}")
+        index = int(input("What explanation applies? "))
 
         if index == len(self._explanations):
             return False
