@@ -28,7 +28,7 @@ class CompressedTransformer():
                     pass
                 return Problem(Severity.FATAL, f"Unable to parse {name}: {e}", file, self.MAGIC)
         else:
-            return Problem(Severity.UNSUPPORTED, f"Unknown extension {extension} for {name} file", file, self.MAGIC)
+            return Problem(Severity.UNSUPPORTED, f"Unknown filename {file} for {name} file", file, self.MAGIC)
         return None
 
     def execute(self, file: str) -> tuple[bool, Problem | None]:
