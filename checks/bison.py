@@ -33,7 +33,7 @@ class BisonChecker(Checker):
             else:
                 c_file = file.removesuffix(".h") + ".c"
                 if os.path.isfile(c_file) and self._test_c(c_file):
-                    return Problem(Severity.WARN, "corresponding file {c_file} is Bison-generated", file, self.MAGIC)
+                    return Problem(Severity.WARN, f"corresponding file {c_file} is Bison-generated", file, self.MAGIC)
 
         basename = os.path.basename(file)
         if basename == "y.tab.c" or basename == "y.tab.h":
