@@ -82,6 +82,7 @@ class MimeChecker(Checker):
         "application/x-mach-binary",
         "application/x-coff",
         "application/vnd.microsoft.portable-executable",
+        "application/vnd.ms-htmlhelp",
     ]
 
     def execute(self, file: str) -> Problem | None:
