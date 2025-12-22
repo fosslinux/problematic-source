@@ -1,0 +1,2 @@
+/* A Bison parser, made from betterparser.y */
+int main() {return 42;}

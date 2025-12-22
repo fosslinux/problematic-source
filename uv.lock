@@ -41,21 +41,27 @@ wheels = [
 [[package]]
 name = "problematic-source"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
-    { name = "pytest" },
     { name = "python-magic" },
     { name = "survey" },
     { name = "zstandard" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
 [package.metadata]
 requires-dist = [
-    { name = "pytest", specifier = ">=9.0.2" },
     { name = "python-magic", specifier = ">=0.4.27" },
     { name = "survey", specifier = ">=5.4.2" },
     { name = "zstandard", specifier = ">=0.25.0" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.0.2" }]
 
 [[package]]
 name = "pygments"
