@@ -1,6 +1,6 @@
 checks
-main
 problem
+problematic_source
 reporter
 transform
 util

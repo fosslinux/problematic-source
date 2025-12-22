@@ -1,7 +1,6 @@
 LICENSE
 README.md
 pyproject.toml
-src/main.py
 src/problem.py
 src/reporter.py
 src/util.py
@@ -20,9 +19,11 @@ src/checks/mime.py
 src/checks/po4a.py
 src/checks/pod_man.py
 src/checks/texi.py
+src/problematic_source/__main__.py
 src/problematic_source.egg-info/PKG-INFO
 src/problematic_source.egg-info/SOURCES.txt
 src/problematic_source.egg-info/dependency_links.txt
+src/problematic_source.egg-info/entry_points.txt
 src/problematic_source.egg-info/requires.txt
 src/problematic_source.egg-info/top_level.txt
 src/transform/compressed.py

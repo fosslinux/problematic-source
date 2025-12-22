@@ -1,0 +1,2 @@
+[console_scripts]
+problematic-source = problematic_source.__main__:main
